@@ -77,12 +77,10 @@ int noteDurations[] = {
 
 
 void showDice(long number);
-
 void hideDice();
-
 void sensorAndLedTest();
-
 void numberTest();
+
 
 void setup() {
     Serial.begin(9600);
@@ -114,9 +112,6 @@ void loop() {
 
             long number = random(0, 6);
             showDice(number);
-            Serial.print('\n');
-            Serial.print(number);
-            Serial.print('\n');
 
             tone(3, melody[thisNote], noteDuration);
 
@@ -129,7 +124,6 @@ void loop() {
         long number = random(0, 6);
         showDice(number);
     }
-
 }
 
 void showDice(long number) {
