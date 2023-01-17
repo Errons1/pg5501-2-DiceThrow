@@ -1,4 +1,5 @@
 #include <Arduino.h>
+#include "pitches.h"
 
 /*
  * Shape for led dice
@@ -19,7 +20,7 @@ const int pinOutLed6 = 8;
 const int pinOutLed7 = 7;
 
 /* Speaker */
-const int pinOutSpeaker = 7;
+const int pinOutSpeaker = 3;
 
 /* Tilt switch sensor */
 const int pinInnSensor = 5;
@@ -33,6 +34,48 @@ int dice[6][7] = {
         {1, 0, 1, 1, 0, 1, 1},
         {1, 1, 1, 1, 1, 1, 0},
 };
+
+int melody[] = {
+        NOTE_G3, NOTE_A3, NOTE_B3, NOTE_CS3,
+        NOTE_G3, NOTE_A3, NOTE_B3, NOTE_C3,
+        NOTE_GS3, NOTE_AS3, NOTE_C4, NOTE_D4,
+        NOTE_A3, NOTE_B3, NOTE_C4, NOTE_D4,
+
+        NOTE_A3, NOTE_B3, NOTE_CS4, NOTE_DS4,
+        NOTE_A3, NOTE_B3, NOTE_C4, NOTE_D4,
+        NOTE_AS3, NOTE_C4,NOTE_D4, NOTE_E4,
+        NOTE_B3, NOTE_C4, NOTE_D4, NOTE_E4,
+
+        NOTE_B3, NOTE_CS4, NOTE_DS4, NOTE_F4,
+        NOTE_C4, NOTE_D4, NOTE_E4, NOTE_FS4,
+        NOTE_CS4, NOTE_DS4, NOTE_F4, NOTE_G4,
+        NOTE_D4, NOTE_E4, NOTE_FS4, NOTE_GS4,
+
+        BREAK, BREAK,
+        NOTE_A3, NOTE_AS3, NOTE_B3, NOTE_C4
+};
+
+int noteDurations[] = {
+        4, 4, 4, 4,
+        4, 4, 4, 4,
+        4, 4, 4, 4,
+        4, 4, 4, 4,
+
+        5, 5, 5, 5,
+        5, 5, 5, 5,
+        5, 5, 5, 5,
+        5, 5, 5, 5,
+
+        6, 6, 6, 6,
+        6, 6, 6, 6,
+        6, 6, 6, 6,
+        6, 6, 6, 6,
+
+        2, 2,
+        2, 2, 2, 1
+};
+
+void rollDiceSong();
 
 void setup() {
     Serial.begin(9600);
@@ -54,27 +97,27 @@ void loop() {
      * 0 == active */
     int stateSensor = digitalRead(pinInnSensor);
 
-    if (stateSensor == 0) {
-        digitalWrite(pinOutLed1, 1);
-        digitalWrite(pinOutLed2, 1);
-        digitalWrite(pinOutLed3, 1);
-        digitalWrite(pinOutLed4, 1);
-        digitalWrite(pinOutLed5, 1);
-        digitalWrite(pinOutLed6, 1);
-        digitalWrite(pinOutLed7, 1);
-    } else {
-        digitalWrite(pinOutLed1, 0);
-        digitalWrite(pinOutLed2, 0);
-        digitalWrite(pinOutLed3, 0);
-        digitalWrite(pinOutLed4, 0);
-        digitalWrite(pinOutLed5, 0);
-        digitalWrite(pinOutLed6, 0);
-        digitalWrite(pinOutLed7, 0);
-    }
+//    tone(pinOutSpeaker, BREAK);
+
+    rollDiceSong();
+
 
     Serial.print(stateSensor);
     Serial.print('\n');
     delay(100);
+}
+
+void rollDiceSong() {
+
+    for (int thisNote = 0; thisNote < 54; thisNote++) {
+
+        int noteDuration = 600 / noteDurations[thisNote];
+        tone(3, melody[thisNote], noteDuration);
+
+        int pauseBetweenNotes = noteDuration * 1.30;
+        delay(pauseBetweenNotes);
+        noTone(3);
+    }
 }
 
 void sensorAndLedTest() {
